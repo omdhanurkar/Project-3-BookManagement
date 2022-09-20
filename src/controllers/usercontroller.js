@@ -9,7 +9,7 @@ const createUser= async (req,res)=>{
     let data = req.body
     
     let savedData= await userModel.create(data)
-    res.status(201).send({status:true, data: savedData})
+    res.status(201).send({status:true,msg: "created succesfully", data: savedData})
     }
     catch(err){
         res.status(500).send({status:false, msg:err.message})
@@ -52,7 +52,7 @@ const createUser= async (req,res)=>{
         expires: new Date(Date.now() + 24*60*60*1000)
         
       } 
-      return res.status(200).send({ status: true, token: newobj });
+      return res.status(200).send({ status: true,msg:"login succesfully", token: newobj });
     } catch (err){
         return res.status(500).send({ status: false, error: err.message });
     }
