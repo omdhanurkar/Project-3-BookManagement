@@ -30,9 +30,13 @@ const myValidUser = async (req, res, next) => {
 
     //name
     let Name = data.name;
+
+    
     if (!Name)
       return res.status(400).send({ status: false, msg: "Please enter Name" });
-
+       
+      if(!/^[A-Za-z][A-Za-z0-9_]{4,29}$/.test(Name))
+      return res.status(400).send({ status: false, msg: "Please enter valid name only numbers are not allowed" });
     if (typeof Name === "string" && Name.trim().length == 0)
       return res.status(400).send({ status: false, msg: "input valid NAme" });
 
