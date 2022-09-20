@@ -1,8 +1,8 @@
-const validator = require("../validator/validator");
+
 const validUser=require("../validation/validUser")
 const userModel= require('../models/userModel')
 
-
+const jwt=require('jsonwebtoken')
 
 const createUser= async (req,res)=>{
     try{
@@ -73,7 +73,7 @@ const createUser= async (req,res)=>{
      
     const empty = Object.keys(body).length;
 
-    if(empty == 0) return res.status(400).send({status:false ,data : "plss fill some data"}); 
+    if(empty == 0) return res.status(400).send({status:false ,msg : "plss fill some data"}); 
 
     // ------------------------checking email----------------------------------------------
     // if( validator.isValidEmail(email)) 
@@ -86,10 +86,13 @@ const createUser= async (req,res)=>{
 
     //  ---------------veryfying user--------------------------------------------------
      const existUser = await userModel.findOne({email});
-     if (!existUser)   return res.status(401).send({ status: false, message: "Register yourself" }) 
+    //  if (!existUser)   return res.status(401).send({ status: false, message: "Register yourself" }) 
 
       //-------------------------------token generation-------------------------------
-      const token = jwt.sign({ userId: existUser._id, group: "45" }, "group-45", {expiresIn : "24h"});
+      const token = jwt.sign({ 
+        userId: existUser._id, group: "45" },
+       "group-45", {expiresIn : "24h"}
+       );
 
       const timeElapsed = Date.now();
       const today = new Date(timeElapsed);
@@ -107,5 +110,5 @@ const createUser= async (req,res)=>{
     }
   }
 
-  
+
   module.exports = {createUser,userlogin};
