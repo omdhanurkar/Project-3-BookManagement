@@ -31,9 +31,17 @@ const userlogin = async (req,res) =>{
      if (!existUser)   return res.status(401).send({ status: false, message: "Register yourself" }) 
 
       //-------------------------------token generation-------------------------------
-      const token = jwt.sign({ authorId: existUser._id, group: "69" }, process.env.SECRET_KEY);
-      res.setHeader("x-api-key", token)
-      return res.status(200).send({ status: true, token: token })
+      const token = jwt.sign({ userId: existUser._id, group: "45" }, process.env.SECRET_KEY);
+
+
+      const newobj = {
+        token : token,
+        userId : existUser._id,
+        exp : "skdlms",
+        iat : Date.now()
+        
+      } 
+      return res.status(200).send({ status: true, token: newobj });
     } catch (err){
         return res.status(500).send({ status: false, error: err.message });
     }
