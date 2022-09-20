@@ -10,6 +10,6 @@ router.get("/test-me", function (req, res) {
 
 router.post("/register/users", validtaion.myValidUser,userController.createUser)
 
-router.post("/login/userlogin",userController.userlogin)
+router.post("/login/userlogin",userController.login)
 
 module.exports = router

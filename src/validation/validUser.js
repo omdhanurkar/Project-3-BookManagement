@@ -1,4 +1,5 @@
 const userModel = require("../models/userModel");
+const jwt= require('jsonwebtoken')
 
 const myValidUser = async (req, res, next) => {
   try {
@@ -94,6 +95,35 @@ const myValidUser = async (req, res, next) => {
   }
 };
 
+
+
+// const verifyUser= async  (req,res,next) => {
+//   try{
+//     let token = req.headers["x-api-key"];
+
+//     //token not given-----------------
+
+//     if (!token) {
+//       return res.status(401).send({ status: false, msg: "token not present" });
+//     }
+//     let validation = jwt.verify(token, "vro party all night!!!!!!!!");
+
+//     let authorId = validation.loginId;
+
+//     //valid authorId given-----------------
+
+//     let finalId = await authorModel.findById(authorId);
+//     if (!finalId) return res.status(404).send({ status: false, msg: "Author doesnt exist" });
+      
+      
+       
+
+//        next();
+//   }
+//   catch(err){
+//     res.status(500).send({status:false,msg:err.message})
+//   }
+// }
 
 
 
