@@ -5,35 +5,36 @@ const BookController = require('../controllers/bookcontroller')
 const validtaion = require('../validation/validator')
 const { Authentication, Authorisation } = require('../middleware/auth')
 
-//----------dummy-------------
+//----------dummy---------------------------------------------------------------------------------------------------------------------
 router.get("/test-me", function (req, res) {
     res.send("My first ever api!")
 })
 
-//------------create user----------------
+//------------create user------------------------------------------------------------------------------------------------------------------------
 router.post("/register/users", validtaion.myValidUser, userController.createUser)
 
-//-------------login----------------
+//-------------login------------------------------------------------------------------------------------------------------------------------
 router.post("/login/userlogin", userController.login)
 
-//-----------create book-------------
+//-----------create book---------------------------------------------------------------------------------------------------------------------
 router.post("/books", Authentication ,validtaion.bookValidation , BookController.createBook)
 
-//------------get books---------------
+//------------get books-----------------------------------------------------------------------------------------------------------------------
 router.get("/books",Authentication , BookController.getbook)
 
-//--------get by params-------------
+//--------get by params---------------------------------------------------------------------------------------------------------------------
 router.get("/books/:bookId",Authentication, BookController.getBookByParams)
 
-//-------------delete books-----------
+//-------------delete books-------------------------------------------------------------------------------------------------------------------
 router.delete("/books/:bookId", Authentication, Authorisation, BookController.deleteBook)
 
 
 
-// router.get("/books/:bookId",Authentication,bookController.getBookByParams)
+//--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
+router.all("/*", function (req, res) {
+    res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"
+    });
+});
 
-
-
-// router.all('/*', function (req, res) { return res.status(404).send({ status: false, message: "endpoint is required" }) })
 
 module.exports = router

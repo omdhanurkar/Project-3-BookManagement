@@ -1,14 +1,13 @@
 const userModel = require("../models/userModel");
-const bookModel = require("../models/bookModel")
+const bookModel = require("../models/bookModel");
 const jwt = require("jsonwebtoken");
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 const myValidUser = async (req, res, next) => {
-
   try {
     let data = req.body;
     let title = ["Mr", "Mrs", "Miss"];
 
-    //====================> to check the data in body <==============================================================================================================
+    //======================> to check the data in body <==============================================================================================================
 
     if (Object.keys(data).length == 0)
       return res
@@ -27,7 +26,7 @@ const myValidUser = async (req, res, next) => {
         .status(400)
         .send({ status: false, msg: "Please enter  valid Mr,Mrs,Miss " });
 
-    //=====================> Name validation and REGEX <===================================================================================================
+    // =====================> Name validation and REGEX <===================================================================================================
 
     let Name = data.name;
 
@@ -37,12 +36,10 @@ const myValidUser = async (req, res, next) => {
     //-----------------------> REGEX <------------------------------------------------------------------------------------------------------------------------------
 
     if (!/^[A-Za-z][A-Za-z0-9_]{4,29}$/.test(Name))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          msg: "Please enter valid name only numbers are not allowed",
-        });
+      return res.status(400).send({
+        status: false,
+        msg: "Please enter valid name only numbers are not allowed",
+      });
 
     if (typeof Name === "string" && Name.trim().length == 0)
       return res.status(400).send({ status: false, msg: "input valid NAme" });
@@ -67,7 +64,7 @@ const myValidUser = async (req, res, next) => {
         .status(400)
         .send({ status: false, msg: "Wrong Mobile Number" });
 
-    //=====================> E-mail validation and REGEX <===============================================================================      
+    //=====================> E-mail validation and REGEX <===============================================================================
 
     if (!data.email)
       return res
@@ -112,99 +109,123 @@ const myValidUser = async (req, res, next) => {
   }
 };
 
-
-//*********************************book-Validation********************/
+//======================## book-Validation ##===================================================================================
 
 const bookValidation = async (req, res, next) => {
   try {
-
-    let data = req.body
-    let { title, excerpt, userId, ISBN, category, subcategory, reviews } = data
+    let data = req.body;
+    let { title, excerpt, userId, ISBN, category, subcategory, reviews } = data;
     if (Object.keys(data).length == 0)
-      return res.status(400).send({ status: false, msg: "Kindly input all the nessesary details" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "Kindly input all the nessesary details" });
 
-    //=======================title =================================================================================
+    //========================= title =============================================================================================================
     if (!title)
-      return res.status(400).send({ status: false, msg: " Please input Title" })
+      return res
+        .status(400)
+        .send({ status: false, msg: " Please input Title" });
 
-    // if (!(typeof title == "string") || title.trim().length == 0)
-      // return res.status(400).send({ status: false, msg: "invalid title" })
+    //------------------------- REGEX ---------------------------------------------------------------------------------------------------------------
 
-    if (!(/^[A-Z][a-z0-9_-]{3,}$/).test(title))
-      return res.status(400).send({ status: false, msg: "first letter of title must be an uppercase" })
+    if (!/^[A-Z][a-z0-9_-]{3,}$/.test(title))
+      return res
+        .status(400)
+        .send({
+          status: false,
+          msg: "please input valid title and first letter must be of Uppercase",
+        });
 
-    let Tital = req.body.title
+    let Tital = req.body.title;
 
-    let uniqTitle = await bookModel.findOne({ title: Tital })
+    //------------------------- DB call ------------------------------------------------------------------------------------------------------
+
+    let uniqTitle = await bookModel.findOne({ title: Tital });
 
     if (uniqTitle)
-      return res.status(400).send({ status: false, msg: "This title already exists" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "This title already exists" });
 
-    // excerpt
+    //===========================> validation for excerpt <===================================================================================================
+
     if (!excerpt)
-      return res.status(400).send({ status: false, msg: "input excerpt please" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "input excerpt please" });
 
     if (!(typeof excerpt == "string") || excerpt.trim().length == 0)
-      return res.status(400).send({ status: false, msg: "input valid excerpt" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "input valid excerpt" });
+    //----------------------------> REGEX <----------------------------------------------------------------------------------------------------------------
 
-    if (!(/^[a-zA-Z][a-z_-]{3,}$/).test(excerpt))
-      return res.status(400).send({ status: false, msg: "enter valid excerpt" })
+    if (!/^[a-zA-Z][a-z_-]{3,}$/.test(excerpt))
+      return res
+        .status(400)
+        .send({ status: false, msg: "enter valid excerpt" });
 
-    //userId
+    //============================> validation for UserID <================================================================================================
+
     if (!userId)
-      return res.status(400).send({ status: false, msg: "input valid userId" })
+      return res.status(400).send({ status: false, msg: "input valid userId" });
 
-
+    //-----------------------------> REGEX <--------------------------------------------------------------------------------------------
     if (!userId.match(/^[0-9a-fA-F]{24}$/))
-      return res.status(400).send({ status: false, msg: "invalid userId given" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "invalid userId given" });
 
-
+    //-----------------------------> DB call <------------------------------------------------------------------------------------------------------
     if (!(await userModel.findById(userId)))
-      return res.status(400).send({ status: false, msg: "wrong userID" })
+      return res.status(404).send({ status: false, msg: "wrong userID" });
 
-
-
-    //isbn 
+    //=============================> validation for ISBN <====================================================================================
 
     if (!ISBN)
-      return res.status(400).send({ status: false, msg: "enter  ISBN" })
+      return res.status(400).send({ status: false, msg: "enter  ISBN" });
 
     if (!(typeof ISBN == "string") || ISBN.trim().length == 0)
-      return res.status(400).send({ status: false, msg: "input valid ISBN" })
-
+      return res.status(400).send({ status: false, msg: "input valid ISBN" });
+    //-----------------------------> REGEX <---------------------------------------------------------------------------------------------------------
     if (!/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(ISBN))
-      return res.status(400).send({ status: false, msg: "Please input valid ISBN with 10 or 13 Numbers" })
+      return res
+        .status(400)
+        .send({
+          status: false,
+          msg: "Please input valid ISBN with 10 or 13 Numbers",
+        });
 
+    //-----------------------------> DB call <------------------------------------------------------------------------------------------------
+    if (await bookModel.findOne({ ISBN: ISBN }))
+      return res
+        .status(400)
+        .send({ status: false, msg: " ISBN already present" });
 
-    if ((await bookModel.findOne({ ISBN: ISBN })))
-      return res.status(400).send({ status: false, msg: " ISBN already present" })
-
-
-    //category
+    //==============================> validation for category <================================================================================
     if (!category)
-      return res.status(400).send({ status: false, msg: "enter category" })
+      return res.status(400).send({ status: false, msg: "enter category" });
 
     if (!(typeof category == "string") || category.trim().length == 0)
-      return res.status(400).send({ status: false, msg: "enter  valid category" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "enter  valid category" });
 
-
-    // subcategory
+    //===============================> subcategory <========================================================================================
 
     if (!subcategory)
-      return res.status(400).send({ status: false, msg: "enter subcategory" })
+      return res.status(400).send({ status: false, msg: "enter subcategory" });
 
     if (!(typeof subcategory == "string") || subcategory.trim().length == 0)
-      return res.status(400).send({ status: false, msg: "enter valid subcategory" })
+      return res
+        .status(400)
+        .send({ status: false, msg: "enter valid subcategory" });
 
-
+    // calling next function --
     next();
+  } catch (err) {
+    res.status(500).send({ status: false, msg: err.message });
   }
-  catch (err) {
-    res.status(500).send({ status: false, msg: err.message })
-  }
-}
-
-
-
+};
 
 module.exports = { myValidUser, bookValidation };

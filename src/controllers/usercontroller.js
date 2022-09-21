@@ -1,6 +1,9 @@
 const userModel = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 
+
+//====================== user creation ==============================================================================================
+
 const createUser = async (req, res) => {
   try {
     let data = req.body
@@ -13,6 +16,7 @@ const createUser = async (req, res) => {
   }
 }
 
+//======================== user login ==============================================================================================
 
 const login = async (req, res) => {
   try {
@@ -25,7 +29,7 @@ const login = async (req, res) => {
       return res.status(401).send({ status: false, msg: "invalid login details" })
 
 
-    //-------------------------------token generation-------------------------------
+    //-------------------------------token generation--------------------------------------------------------------------------------------------
     const newtoken = jwt.sign(
       {
         userId: userLogin._id,

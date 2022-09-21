@@ -5,14 +5,12 @@ const userModel = require("../models/userModel")
 const ReviewModel = require("../models/reviewModel")
 // const ObjectId = mongoose.Schema.Types.ObjectId
 
-//-----------------------creating Books--------------------
+//-----------------------creating Books--------------------------------------------------------------------------------------------------------------------
 
 const createBook = async function (req, res) {
     try {
         let data = req.body
-        // console.log(data)
         let userId = data.userId
-        // console.log(userId)
         let isValid = mongoose.Types.ObjectId.isValid(userId)
 
         if (isValid == false) return res.status(400).send({ status: false, msg: "Invalid length of UserId" })
@@ -28,17 +26,17 @@ const createBook = async function (req, res) {
     }
 }
 
-//---------------------------get-book-details------------------------------
+//---------------------------get-book-details------------------------------------------------------------------------------------------------------------------------------
 const getbook = async function (req, res) {
     try {
 
         let que = req.query
         if (Object.keys(que).length > 3) return res.status(400).send({ status: false, msg: "dont put extra field" });
 
-        //-------------------get books-------------------------------------------------------- 
+        //-------------------get books-------------------------------------------------------------------------------------------------------------------------------------------------------- 
         const newgetBooks = await BookModel.find({ $and: [{ isDeleted: false }, que] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).sort({ title: 1 })
 
-        // ---------------nothing found----------------------------------------------------------
+        // ---------------nothing found----------------------------------------------------------------------------------------------------------------------------------------------------------
         if (newgetBooks.length == 0) return res.status(400).send({ status: false, msg: "no books found" })
 
         return res.status(200).send({ status: true, msg: "get books succesfully", data: newgetBooks });
@@ -48,7 +46,7 @@ const getbook = async function (req, res) {
     }
 }
 
-//-------------------------get by query-params--------------------------
+//-------------------------get by query-params-------------------------------------------------------------------------------------
 
 const getBookByParams = async function (req, res) {
 
@@ -78,14 +76,11 @@ const getBookByParams = async function (req, res) {
     }
 }
 
-
-//----------------------------delete book------------------------------------
+//----------------------------delete book-------------------------------------------------------------------------------------------------
 
 const deleteBook = async function (req, res) {
     try {
         let bookId = req.params.bookId
-
-        // console.log(bookId)
 
         if (!bookId)
             return res.status(400).send({ status: false, msg: "Please enter valid bookId" })
