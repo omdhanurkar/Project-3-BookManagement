@@ -36,20 +36,13 @@ const createUser= async (req,res)=>{
 
      
       //-------------------------------token generation-------------------------------
-      const token = jwt.sign(
+      const newtoken = jwt.sign(
         { 
         userId: userLogin._id,
         group: "45",iat : Math.floor(Date.now()/1000) -30},"group-45", 
         {expiresIn : "24h"});
         
-      const newobj = {
-        token : token,
-        userId : userLogin._id,
-        iat : Math.floor(Date.now()/1000) -30,
-        expires: new Date(Date.now() + 24*60*60*1000)
-        
-      } 
-      return res.status(200).send({ status: true,msg:"login succesfully", token: newobj });
+      return res.status(200).send({ status: true,msg:"login succesfully", token: newtoken });
     } catch (err){
         return res.status(500).send({ status: false, error: err.message });
     }
