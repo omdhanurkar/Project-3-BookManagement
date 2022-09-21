@@ -84,7 +84,7 @@ const myValidUser = async (req, res, next) => {
 
     //password validation
     if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(data.password)
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{7,14}$/.test(data.password)
     )
       return res
         .status(400)
