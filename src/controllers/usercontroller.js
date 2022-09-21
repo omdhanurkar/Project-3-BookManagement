@@ -39,16 +39,13 @@ const createUser= async (req,res)=>{
       const token = jwt.sign(
         { 
         userId: userLogin._id,
-        group: "45" },"group-45", 
+        group: "45",iat : Math.floor(Date.now()/1000) -30},"group-45", 
         {expiresIn : "24h"});
-
-      const timeElapsed = Date.now();
-      const today = new Date(timeElapsed);
-      
+        
       const newobj = {
         token : token,
         userId : userLogin._id,
-        iat : today.toLocaleDateString(),
+        iat : Math.floor(Date.now()/1000) -30,
         expires: new Date(Date.now() + 24*60*60*1000)
         
       } 
