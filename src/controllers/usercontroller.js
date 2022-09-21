@@ -1,7 +1,4 @@
-
-const validUser=require("../validation/validUser")
 const userModel= require('../models/userModel')
-
 const jwt=require('jsonwebtoken')
 
 const createUser= async (req,res)=>{
@@ -15,13 +12,6 @@ const createUser= async (req,res)=>{
         res.status(500).send({status:false, msg:err.message})
     }
 }
-
-
-
-
-
-
-
 
 
   const login = async (req,res) =>{

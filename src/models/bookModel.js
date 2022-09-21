@@ -5,33 +5,47 @@ const bookSchema =  new mongoose.Schema({
     title: {
         type: String,
         require: true,
-        unique: true
+        unique: true,
+        trim:true,
+        lowercase: true,
     },
     excerpt: {
         type: String,
-        require: true
+        require: true,
+        trim:true,
+        lowercase: true,
     },
     userId: {
         type: ObjectId,
         require: true,
-        ref: 'User'
+        ref: 'User',
+        trim: true,
+        lowercase: true,
     },
     ISBN: {
         type: String,
         require: true,
-        unique: true
+        unique: true,
+        trim:true,
+        lowercase: true
     },
     category: {
         type: String,
-        require: true
+        require: true,
+        trim: true,
+        lowercase: true,
     },
     subcategory: {
         type: [String],
-        require: true
+        require: true,
+        trim: true,
+        lowercase: true,
     },
     reviews: {
         type: Number,
-        default: 0
+        default: 0,
+        trim: true,
+        lowercase: true,
 
     },
     deletedAt: {
