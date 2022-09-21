@@ -153,13 +153,13 @@ const bookValidation = async (req,res,next)=>{
  if(!userId)
  return res.status(400).send({status:false,msg:"input valid userId"})
 
- let ID= data.userId
-
- if(!(await userModel.findById(ID)))
- return res.status(400).send({status:false, msg:"wrong userID"})
-
+ 
  if (!userId.match(/^[0-9a-fA-F]{24}$/))
     return res.status(400).send({ status: false, msg: "invalid userId given" })
+
+
+ if(!(await userModel.findById(userId)))
+ return res.status(400).send({status:false, msg:"wrong userID"})
 
 
 
@@ -174,9 +174,9 @@ return res.status(400).send({status:false, msg:"input valid ISBN"})
 if(!(/^[6-9]{3}\-([\d]{10})$/.test(ISBN)))
 return res.status(400).send({status:false, msg:"Please input valid ISBN"}) 
 
-// let myIsbn= req.body.ISBN
-// if((await bookModel.findOne({ISBN:myIsbn}))) 
-// return res.status(400).send({status:false,msg:"enter invalid ISBN number"})
+
+if((await bookModel.findOne({ISBN:ISBN}))) 
+return res.status(400).send({status:false,msg:" ISBN already present"})
 
 
 //category

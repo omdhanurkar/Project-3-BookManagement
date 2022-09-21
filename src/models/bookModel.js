@@ -36,7 +36,7 @@ const bookSchema =  new mongoose.Schema({
         lowercase: true,
     },
     subcategory: {
-        type: [String],
+        type: String,
         require: true,
         trim: true,
         lowercase: true,

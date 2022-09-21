@@ -8,14 +8,13 @@ const bookModel = require('../models/bookModel')
 const createBook = async function(req ,res){
     try {
         let data = req.body
-        
         let userId = data.userId
-        
         let isValid = mongoose.Types.ObjectId.isValid(userId)
         
-         const a = await bookModel.find({title:req.body.title,ISBN:req.body.ISBN})
-         if(a.length!==0)
-           return res.status(401).send({status:false, msg: "pehele se hai"})
+        // const a = await bookModel.findOne({title:data.title},{ISBN:data.ISBN})
+        // console.log(a)
+        // if(Object.keys(a).length==0)
+        //   return res.status(401).send({status:false, msg: "pehele se hai"})
          
         if(isValid == false) return res.status(400).send({status : false , msg : "Invalid length of UserId"})
 
