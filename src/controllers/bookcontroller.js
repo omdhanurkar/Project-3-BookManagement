@@ -99,14 +99,11 @@ const deleteBook = async function (req, res) {
 
         let deletedData = await BookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true })
 
-        return res.status(200).send({ status: false, msg: "Book is been Deleted", data: deletedData })
+        return res.status(200).send({ status: true, msg: "Book is been Deleted", data: deletedData })
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
     }
 }
 
-module.exports.createBook = createBook
-module.exports.getbook = getbook
-module.exports.deleteBook = deleteBook
-module.exports.getBookByParams = getBookByParams
+module.exports.createBook = {createBook,getbook,deleteBook,getBookByParams}
