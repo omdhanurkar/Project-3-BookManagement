@@ -31,10 +31,10 @@ router.delete("/books/:bookId", Authentication, Authorisation, BookController.de
 
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
-router.all("/*", function (req, res) {
-    res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"
-    });
-});
+// router.all("/*", function (req, res) {
+//     res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"
+//     });
+// });
 
 
 module.exports = router
