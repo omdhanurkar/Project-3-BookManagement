@@ -107,12 +107,6 @@ const updateBook = async function (req, res) {
         let newtitle = await BookModel.findOne({ title });
         if (newtitle) return res.status(404).send({ status: false, msg: "title is already present" });
 
-        let newexcerpt = await BookModel.findOne({ excerpt });
-        if (newexcerpt) return res.status(404).send({ status: false, msg: "excerpt is already present" });
-
-        let newreleasedAt = await BookModel.findOne({ releasedAt });
-        if (newreleasedAt) return res.status(404).send({ status: false, msg: "release date is already present" });
-
         let newISBN = await BookModel.findOne({ ISBN });
         if (newISBN) return res.status(404).send({ status: false, msg: "ISBN is already present" });
 
