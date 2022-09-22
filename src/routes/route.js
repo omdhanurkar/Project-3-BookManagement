@@ -28,6 +28,8 @@ router.get("/books/:bookId",Authentication, BookController.getBookByParams)
 //-------------delete books-------------------------------------------------------------------------------------------------------------------
 router.delete("/books/:bookId", Authentication, Authorisation, BookController.deleteBook)
 
+/-----------------------------update----------------------------------------------------------------------------
+router.put("/books/:bookId", Authentication,Authorisation, BookController.updateBook)
 
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
