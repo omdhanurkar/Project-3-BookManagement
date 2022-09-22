@@ -99,6 +99,10 @@ const updateBook = async function (req, res) {
         if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
         let bookData = req.body;
         let { title, excerpt, releasedAt, ISBN } = bookData;
+         
+        //-----------------check body is empty or not-----------------------------------------------------------
+         if(Object.keys(bookData).length == 0)
+        return res.status(404).send({ status: false, msg: "plss put some data in body" });
 
         let newtitle = await BookModel.findOne({ title });
         if (newtitle) return res.status(404).send({ status: false, msg: "title is already present" });
