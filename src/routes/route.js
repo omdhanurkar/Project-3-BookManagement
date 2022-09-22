@@ -25,6 +25,10 @@ router.get("/books",Authentication , BookController.getbook)
 //--------get by params---------------------------------------------------------------------------------------------------------------------
 router.get("/books/:bookId",Authentication, BookController.getBookByParams)
 
+//------------ update books ------------------------------------------------------------------------------------------------------------ 
+
+router.post("/books", Authentication ,validtaion.bookValidation , BookController.updateBook)
+
 //-------------delete books-------------------------------------------------------------------------------------------------------------------
 router.delete("/books/:bookId", Authentication, Authorisation, BookController.deleteBook)
 

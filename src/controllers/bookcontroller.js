@@ -26,7 +26,12 @@ const createBook = async function (req, res) {
     }
 }
 
-//---------------------------😊get-book-details😊------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+//---------------------------😊 get-book-details😊 ------------------------------------------------------------------------------------------------------------------------------
 const getbook = async function (req, res) {
     try {
 
@@ -76,6 +81,33 @@ const getBookByParams = async function (req, res) {
     }
 }
 
+
+const updateBook = async function (req, res) {
+    try {
+        let bookId = req.params.bookId;
+        if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
+        let bookData = req.body;
+        let updateBook = await BlogModel.findOneAndUpdate(
+            { _id: bookId, isDeleted: false },
+            {
+                $set: {
+                    title: bookData.title, excerpt: bookData.excerpt,
+                    releasedAt: new Date, ISBN: bookData.ISBN
+                }
+            },
+            { new: true }
+        );
+        if (!updateBook) {
+            return res.send(404).send({ status: false, message: "bookId not found" })
+        }
+        else {
+            return res.status(201).send({ status: true, message: "book has been updated", data: updateBook })
+        }
+    } catch (err) {
+
+    }
+}
+
 //---------------------------- 🥲delete book🥲-------------------------------------------------------------------------------------------------
 
 const deleteBook = async function (req, res) {
@@ -99,7 +131,5 @@ const deleteBook = async function (req, res) {
     }
 }
 
-module.exports.createBook = createBook
-module.exports.getbook = getbook
-module.exports.deleteBook = deleteBook
-module.exports.getBookByParams = getBookByParams
+
+module.exports = {createBook,getBookByParams,deleteBook,getbook,updateBook}

@@ -21,11 +21,13 @@ const myValidUser = async (req, res, next) => {
         .status(400)
         .send({ status: false, msg: "Please enter title and valid details " });
 
-    if (!title.includes(data.title))
+        
+    if (!title.includes(data.title.trim()))
       return res
         .status(400)
         .send({ status: false, msg: "Please enter  valid Mr,Mrs,Miss " });
-
+        
+      
     // =====================> Name validation and REGEX <===================================================================================================
 
     let Name = data.name;
@@ -38,7 +40,7 @@ const myValidUser = async (req, res, next) => {
     if (!/^[A-Za-z][A-Za-z0-9_]{4,29}$/.test(Name))
       return res.status(400).send({
         status: false,
-        msg: "Please enter valid name only numbers are not allowed",
+        msg: "Please enter valid name and  only numbers are not allowed",
       });
 
     if (typeof Name === "string" && Name.trim().length == 0)
