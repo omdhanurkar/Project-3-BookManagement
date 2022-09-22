@@ -32,13 +32,16 @@ router.post("/books", Authentication ,validtaion.bookValidation , BookController
 //-------------delete books-------------------------------------------------------------------------------------------------------------------
 router.delete("/books/:bookId", Authentication, Authorisation, BookController.deleteBook)
 
+//-----------------------------update----------------------------------------------------------------------------
+
+router.put("/books/:bookId", Authentication,Authorisation, BookController.updateBook)
 
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
-router.all("/*", function (req, res) {
-    res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"
-    });
-});
+// router.all("/*", function (req, res) {
+//     res.status(400).send({status: false, message: "Make Sure Your Endpoint is Correct !!!"
+//     });
+// });
 
 
 module.exports = router

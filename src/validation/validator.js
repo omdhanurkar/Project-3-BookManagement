@@ -96,7 +96,7 @@ const myValidUser = async (req, res, next) => {
     //-------------------> REGEX <-----------------------------------------------------------------------------------------------------
 
     if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{7,14}$/.test(
+      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,15}$/.test(
         data.password
       )
     )
@@ -104,6 +104,22 @@ const myValidUser = async (req, res, next) => {
         status: false,
         msg: "Atleat 1 capital, 1 small, numbers and Length should be 8 or more in password!",
       });
+    
+    //---------------adress validation--------------------------------------------------------------------------------
+    let newadress = data.address;  
+      // empty object value is truthy so is no key present in adress in taht case also its go into if 
+      if (newadress) {
+        if (!newadress.street) {
+            return res.status(400).send({ status: false, message: "Street address cannot be empty" })
+        }
+        if (!newadress.city) {
+            return res.status(400).send({ status: false, message: "City cannot be empty" })
+        }
+        if (!newadress.pincode) {
+            return res.status(400).send({ status: false, message: "Pincode cannot be empty" })
+        }
+        // else {return res.status(400).send({ status: false, message: "address cannot be empty" }) }
+    }
 
     next();
   } catch (err) {

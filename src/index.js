@@ -16,6 +16,11 @@ mongoose.connect("mongodb+srv://group45Database:LluRUzY3qvGKUVwo@project-3.hwz6k
 
 app.use('/', route);
 
+//----------wrong api edge case--------------------------------------------
+app.use((req, res, next) => {
+    res.status(400).send({ status: false, error: "URL is wrong" });
+})
+
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Express app running on port ' + (process.env.PORT || 3000))
