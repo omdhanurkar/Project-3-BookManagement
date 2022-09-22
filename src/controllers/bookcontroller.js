@@ -92,7 +92,7 @@ const getBookByParams = async function (req, res) {
     }
 }
 
-
+//------------------updated book---------------------------------------------------------------------------------
 const updateBook = async function (req, res) {
     try {
         let bookId = req.params.bookId;
@@ -119,8 +119,8 @@ const updateBook = async function (req, res) {
             { _id: bookId, isDeleted: false },
             {
                 $set: {
-                    title: bookData.title, excerpt: bookData.excerpt,
-                    releasedAt: new Date, ISBN: bookData.ISBN
+                    title: title, excerpt: excerpt,
+                    releasedAt: new Date, ISBN: ISBN
                 }
             },
             { new: true }
