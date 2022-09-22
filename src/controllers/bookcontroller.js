@@ -17,6 +17,10 @@ const createBook = async function (req, res) {
 
         let result = await userModel.findById(userId)
         if (!result) return res.status(400).send({ status: false, msg: "Please enter the registerd UserId" })
+        
+        //-------------checking authorization----------------------------------------------------------- 
+        if(req.decodedToken.userId != userId)
+        return res.status(201).send({ status: false, msg : "you are not authorised" })
 
         let finalData = await BookModel.create(data)
         return res.status(201).send({ status: true, msg: "created book", data: finalData })
