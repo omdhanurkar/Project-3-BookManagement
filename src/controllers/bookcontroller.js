@@ -110,4 +110,50 @@ const deleteBook = async function (req, res) {
     }
 }
 
-module.exports = {createBook,getbook,deleteBook,getBookByParams}
+// -------------------------updatebook--------------------------------------------------------------------------------
+
+const updateBook = async function (req, res) {
+    try {
+        let bookId = req.params.bookId;
+        if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
+        let bookData = req.body;
+        let { title,excerpt,releasedAt,ISBN} = bookData;
+
+        let newtitle = await BookModel.findOne({title});
+        if(newtitle) return res.status(404).send({ status: false, msg: "title is already present" });
+        
+        let newexcerpt = await BookModel.findOne({excerpt});
+        if(newexcerpt) return res.status(404).send({ status: false, msg: "excerpt is already present" });
+
+        let newreleasedAt = await BookModel.findOne({releasedAt});
+        if(newreleasedAt) return res.status(404).send({ status: false, msg: "release date is already present" });
+
+        let newISBN = await BookModel.findOne({ISBN});
+        if(newISBN) return res.status(404).send({ status: false, msg: "ISBN is already present" });
+        
+        //--------------CHECKING BOOK IS ALREADY DELETED OR NOT-------------------------------------
+        const book = await BookModel.findById(bookId);
+        if ( book.isDeleted == true)
+        return res.status(404).send({ status: false, msg: "Book is already deleted" });
+
+        let updateBook = await BookModel.findOneAndUpdate(
+            { _id: bookId, isDeleted: false },
+            {
+                $set: {
+                    title: bookData.title, excerpt: bookData.excerpt,
+                    releasedAt: new Date, ISBN: bookData.ISBN
+                }
+            },
+            { new: true }
+        );
+        if (!updateBook) {
+            return res.status(404).send({ status: false, message: "bookId not found" })
+        }
+        else {
+            return res.status(201).send({ status: true, message: "book has been updated" })
+        }
+    } catch (error) {
+        return res.status(500).send({ status: false, msg: error.msg })
+    }
+}
+module.exports = {createBook,getbook,deleteBook,getBookByParams,updateBook}
