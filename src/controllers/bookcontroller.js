@@ -17,10 +17,10 @@ const createBook = async function (req, res) {
 
         let result = await userModel.findById(userId)
         if (!result) return res.status(400).send({ status: false, msg: "Please enter the registerd UserId" })
-        
+
         //-------------checking authorization----------------------------------------------------------- 
-        if(req.decodedToken.userId != userId)
-        return res.status(201).send({ status: false, msg : "you are not authorised" })
+        if (req.decodedToken.userId != userId)
+            return res.status(201).send({ status: false, msg: "you are not authorised" })
 
         let finalData = await BookModel.create(data)
         return res.status(201).send({ status: true, msg: "created book", data: finalData })
@@ -44,15 +44,15 @@ const getbook = async function (req, res) {
 
         // if user id present then only it will eneter into if block and check the id is not valid otherwise it will not enetr into if block
         // -----------handle userid---------------------------------------------------
-          if(userid || userid == '') {   
-        if (!mongoose.Types.ObjectId.isValid(userid)) {
-                            return res.status(404).send({ status: false, message: "UserId is not valid" })
-                        }
-          }
+        if (userid || userid == '') {
+            if (!mongoose.Types.ObjectId.isValid(userid)) {
+                return res.status(404).send({ status: false, message: "UserId is not valid" })
+            }
+        }
         // -------------------get books-------------------------------------------------------- 
         const newgetBooks = await BookModel.find({ $and: [{ isDeleted: false }, que] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).sort({ title: 1 })
 
-//         // ---------------nothing found----------------------------------------------------------
+        //         // ---------------nothing found----------------------------------------------------------
         if (newgetBooks.length == 0 || newgetBooks == null) return res.status(400).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
 
         return res.status(200).send({ status: true, msg: "get books succesfully", data: newgetBooks });
@@ -99,10 +99,10 @@ const updateBook = async function (req, res) {
         if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
         let bookData = req.body;
         let { title, excerpt, releasedAt, ISBN } = bookData;
-         
+
         //-----------------check body is empty or not-----------------------------------------------------------
-         if(Object.keys(bookData).length == 0)
-        return res.status(404).send({ status: false, msg: "plss put some data in body" });
+        if (Object.keys(bookData).length == 0)
+            return res.status(404).send({ status: false, msg: "plss put some data in body" });
 
         let newtitle = await BookModel.findOne({ title });
         if (newtitle) return res.status(404).send({ status: false, msg: "title is already present" });
@@ -160,4 +160,4 @@ const deleteBook = async function (req, res) {
 }
 
 
-module.exports = {createBook,getBookByParams,deleteBook,getbook,updateBook}
+module.exports = { createBook, getBookByParams, deleteBook, getbook, updateBook }

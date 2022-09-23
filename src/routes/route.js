@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController')
 const BookController = require('../controllers/bookcontroller')
+const ReviewController = require('../controllers/reviewcontroller')
 const validtaion = require('../validation/validator')
 const { Authentication, Authorisation } = require('../middleware/auth')
 
@@ -35,6 +36,12 @@ router.delete("/books/:bookId", Authentication, Authorisation, BookController.de
 //-----------------------------update----------------------------------------------------------------------------
 
 router.put("/books/:bookId", Authentication,Authorisation, BookController.updateBook)
+
+//--------------------------review-------------------------
+router.post("/books/:bookId/review", ReviewController.reviews)
+
+//-----------------updating the review------------------------
+router.put("/books/:bookId/review/:reviewId" , ReviewController.updateReview)
 
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------

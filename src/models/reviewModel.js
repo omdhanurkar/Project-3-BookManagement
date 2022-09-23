@@ -11,10 +11,7 @@ const reviewSchema = new mongoose.Schema({
     reviewedBy: {
         type: String,
         require: true,
-        default: 'Guest',
-        value: {
-            type: String  // I have doubt in this isko confirm krna
-        }
+        default: 'Guest'
     },
     reviewedAt: {
         type: Date,
@@ -22,7 +19,9 @@ const reviewSchema = new mongoose.Schema({
     },
     rating: {
         type: Number,
-        require: true
+        require: true, 
+        min : 1,
+        max : 5
     },
     review: {
         type: String
