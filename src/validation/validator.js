@@ -22,7 +22,7 @@ const myValidUser = async (req, res, next) => {
       return res.status(400).send({ status: false, msg: "Please enter  valid Mr,Mrs,Miss " });
 
 
-    // =====================> Name validation and REGEX <===================================================================================================
+    //=====================> Name validation and REGEX <===================================================================================================
 
     let Name = data.name;
 
@@ -114,18 +114,18 @@ const bookValidation = async (req, res, next) => {
     //------------------------- REGEX ---------------------------------------------------------------------------------------------------------------
 
     if (!/^[a-zA-Z ,]+$/i.test(title))
-      return res.status(400).send({status: false,msg: "please input valid title and first letter must be of Uppercase"});
+      return res.status(400).send({ status: false, msg: "please input valid title and first letter must be of Uppercase" });
 
     let Tital = req.body.title;
     // uniqTitle = uniqTitle.trim().split(" ").filter(word => word).join(" ")
     //------------------------- DB call ------------------------------------------------------------------------------------------------------
 
     let uniqTitle = await bookModel.findOne({ title: Tital });
-   
+
     if (uniqTitle)
       return res.status(400).send({ status: false, msg: "This title already exists" });
-      
-      
+
+
 
     //===========================> validation for excerpt <===================================================================================================
 
@@ -161,7 +161,7 @@ const bookValidation = async (req, res, next) => {
       return res.status(400).send({ status: false, msg: "input valid ISBN" });
     //-----------------------------> REGEX <---------------------------------------------------------------------------------------------------------
     if (!/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(ISBN))
-      return res.status(400).send({status: false,msg: "Please input valid ISBN with 10 or 13 Numbers"});
+      return res.status(400).send({ status: false, msg: "Please input valid ISBN with 10 or 13 Numbers" });
 
     //-----------------------------> DB call <------------------------------------------------------------------------------------------------
     if (await bookModel.findOne({ ISBN: ISBN }))

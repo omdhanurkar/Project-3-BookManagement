@@ -28,8 +28,6 @@ const Authentication = async function (req, res, next) {
         return res.status(500).send({ status: false, message: err.message });
     }
 }
-
-
 //========================================================Authorisation==============================================================
 
 const Authorisation = async function (req, res, next) {

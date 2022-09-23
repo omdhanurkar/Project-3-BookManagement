@@ -28,8 +28,7 @@ const login = async (req, res) => {
     if (!userLogin)
       return res.status(401).send({ status: false, msg: "invalid login details" })
 
-
-    //-------------------------------😎token generation😎--------------------------------------------------------------------------------------------
+    //-------------------------------😎token generation😎--------------------------------------------------
     const newtoken = jwt.sign(
       {
         userId: userLogin._id,
