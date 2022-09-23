@@ -22,7 +22,7 @@ const reviews = async (req, res) => {
         if (!data.reviewedAt) data.reviewedAt = new Date;
 
         const updatebook = await BookModel.findOneAndUpdate({ _id: data.bookId }, { $inc: { reviews: +1 } }, { new: true }).lean();
-        const newreview = await reviewModel.create(data);
+        const newreview = await ReviewModel.create(data);
         // console.log(newreview);
         // console.log(data);
         if (updatebook.isDeleted == true)
