@@ -43,6 +43,9 @@ router.post("/books/:bookId/review", ReviewController.reviews)
 //-----------------updating the review------------------------
 router.put("/books/:bookId/review/:reviewId" , ReviewController.updateReview)
 
+//-----------------deletereview-----------------------
+router.delete("/books/:bookId/review/:reviewId",ReviewController.deleteReview)
+
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
 // router.all("/*", function (req, res) {

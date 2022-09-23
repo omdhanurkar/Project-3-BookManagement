@@ -22,7 +22,7 @@ const createBook = async function (req, res) {
         if (req.decodedToken.userId != userId)
             return res.status(201).send({ status: false, msg: "you are not authorised" })
 
-        let finalData = await BookModel.create(data)
+        let finalData = await BookModel.create(data)//.select({deletedAt:0,_id:0,__v:0})
         return res.status(201).send({ status: true, msg: "created book", data: finalData })
 
     } catch (error) {
@@ -55,7 +55,7 @@ const getbook = async function (req, res) {
         //         // ---------------nothing found----------------------------------------------------------
         if (newgetBooks.length == 0 || newgetBooks == null) return res.status(400).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
 
-        return res.status(200).send({ status: true, msg: "get books succesfully", data: newgetBooks });
+        return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks });
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
@@ -76,14 +76,13 @@ const getBookByParams = async function (req, res) {
 
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
 
-        const reviewsData = await ReviewModel.find({ bookId: book._id })
+        const reviewsData = await ReviewModel.find({ bookId: book._id }).select({isDeleted:0,createdAt:0,updatedAt:0,__v:0})
         if (!reviewsData) return res.status(404).send({ status: false, message: "No book found from this bookId" })
-
         book.reviewsData = reviewsData
 
         let Book = {
             _id: book._id, title: book.title, excerpt: book.excerpt, userId: book.userId, category: book.category, subcategory: book.subcategory,
-            isDeleted: book.isDeleted, releasedAt: book.releasedAt, createdAt: book.createdAt, updatedAt: book.updatedAt, reviewsData: book.reviewsData
+            isDeleted: book.isDeleted,reviews:book.reviews, releasedAt: book.releasedAt, createdAt: book.createdAt, updatedAt: book.updatedAt, reviewsData: book.reviewsData
         }
         return res.status(200).send({ status: true, message: 'Books list', data: Book });
 

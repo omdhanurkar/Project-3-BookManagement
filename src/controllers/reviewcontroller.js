@@ -1,4 +1,5 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const bookModel = require("../models/bookModel");
 const BookModel = require('../models/bookModel')
 const ReviewModel = require("../models/reviewModel")
 
@@ -83,3 +84,42 @@ const updateReview = async function (req, res) {
 }
 
 module.exports = { reviews, updateReview }
+
+//====================================delete review==============================================================
+
+const deleteReview = async function (req, res) {
+    try {
+        let { bookId, reviewId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(bookId)) {
+            return res.status(400).send({ status: false, msg: "please end valid bookid" })
+        }
+        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+            return res.status(400).send({ status: false, msg: "please end valid reviewid" })
+        }
+        let checkBook = await bookModel.findOne({ _id: bookId, isDeleted: false });
+        if (!checkBook) {
+            return res.status(404).send({ status: false, msg: "book not found" })
+        }
+
+        let checkReview = await ReviewModel.find({ _id: reviewId, bookId, isDeleted: false });
+        await ReviewModel.findByIdAndUpdate(
+            { _id: reviewId },
+            { $set: { isDeleted: true, deletedAt: new Date() } }
+        );
+        await BookModel.findByIdAndUpdate(
+            { _id: bookId },
+            { reviews: checkBook.reviews - 1 } 
+        );
+        if (!checkReview) {
+            return res.status(404).send({ status: false, msg: "No review found for this book " })
+        }
+        return res.status(200).send({ status: true, msg: "reveiws has been deleted" })
+
+    } catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
+
+    }
+
+}
+
+module.exports.deleteReview = deleteReview
