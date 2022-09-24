@@ -12,10 +12,10 @@ router.get("/test-me", function (req, res) {
 })
 
 //------------create user------------------------------------------------------------------------------------------------------------------------
-router.post("/register/users", myValidUser, createUser)
+router.post("/register", myValidUser, createUser)
 
 //-------------login------------------------------------------------------------------------------------------------------------------------
-router.post("/login/userlogin", login)
+router.post("/login", login)
 
 //-----------create book---------------------------------------------------------------------------------------------------------------------
 router.post("/books", Authentication ,bookValidation ,createBook)

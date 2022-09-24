@@ -208,7 +208,7 @@ const reviewBook = async (req, res, next) => {
 
     //------------------------checking reviewedBy----------------------------------------------------------
 
-    if (!/^[a-z ,.'-]+$/.test(reviewedBy) || reviewedBy.trim().length == 0)  // this regex is taking spaces between words.
+    if (!/^[a-z ,.'-]+$/.test(reviewedBy) )  // this regex is taking spaces between words.
       return res.status(400).send({ status: false, message: "enter valid reviewer name" });
     // -------------------checking rating--------------------------------------------
     if (!rating) return res.status(400).send({ status: false, message: "rating is mandatory" });
@@ -218,7 +218,7 @@ const reviewBook = async (req, res, next) => {
     // ------------checking review----------------------------------------------------
     if (!review) return res.status(400).send({ status: false, message: "review is mandatory" });
 
-    if (!/^[a-zA-Z ,]{3,}$/.test(review) || review.trim().length == 0)
+    if (!/^[a-zA-Z ,]{3,}$/.test(review) )
       return res.status(400).send({ status: false, message: "enter valid review" });
 
     next();

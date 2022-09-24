@@ -14,7 +14,7 @@ const reviews = async (req, res) => {
         const book = await BookModel.findById(bookId)
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
 
-        if (book.isDeleted == true) return res.status(404).send({ status: false, message: "the book is deleted so you can not give a review" });
+        if (book.isDeleted == true) return res.status(400).send({ status: false, message: "the book is deleted so you can not give a review" });
 
         if (!data.bookId) data.bookId = book._id;
         if (!data.reviewedBy) data.reviewedBy = "Guest";
@@ -73,13 +73,14 @@ const updateReview = async function (req, res) {
                 $set: {
                     review: review, rating: rating, reviewedBy: reviewedBy, reviewedAt: new Date
                 }
-            }, { new: true }).select({ __v: 0, isDeleted: 0 }).lean();
+            }, { new: true })
 
         // -------------adding a newkey--------------------------------------------------
-        updateReview.reviewdata = book;
+        book._doc.reviewData =updateReview;
+
         if (!updateReview) return res.status(400).send({ status: false, msg: "Something went wrong!!!!" })
 
-        return res.status(200).send({ status: true, msg: "Updated the reviews!!!!", data: updateReview });
+        return res.status(200).send({ status: true, msg: "Updated the reviews!!!!", data: book });
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.message })

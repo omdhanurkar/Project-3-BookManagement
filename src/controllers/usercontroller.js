@@ -36,8 +36,8 @@ const login = async (req, res) => {
         group: "45", iat: Math.floor(Date.now() / 1000) - 30
       }, "group-45",
       { expiresIn: "24h" });
-
-    return res.status(200).send({ status: true, msg: "login succesfully", token: newtoken });
+    res.setHe
+    return res.status(201).send({ status: true, msg: "login succesfully", token: newtoken });
   } catch (err) {
     return res.status(500).send({ status: false, error: err.message });
   }
