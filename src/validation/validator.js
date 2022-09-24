@@ -189,4 +189,35 @@ const bookValidation = async (req, res, next) => {
   }
 };
 
-module.exports = { myValidUser, bookValidation };
+// -----------------------review middleware------------------------------------------------------------------------
+const reviewBook = async (req,res,next) => {
+  try {
+      let data = req.body;
+       if(Object.keys(data).length == 0) return res.status(500).send({ status: false, msg: "plss put some data on body" }); 
+
+       let{ reviewedBy, rating, review} = data;
+        
+       //------------------------checking reviewedBy----------------------------------------------------------
+      
+       if (!/^[a-z ,.'-]+$/.test(reviewedBy) || reviewedBy.trim().length == 0)  // this rejex is taking spaces between words.
+       return res.status(400).send({ status: false, msg: "enter valid reviewer name" });
+      // -------------------checking rating--------------------------------------------
+      if(!rating) return res.status(400).send({ status: false, msg: "plss give some review" }); 
+      
+      if (!/^\s*([1-5]){1}\s*$/.test(rating)) return res.status(404).send({ status: false, msg: "ratings is accept only 1 to 5 digit only" });
+
+      // ------------checking review----------------------------------------------------
+       if(!review) return res.status(400).send({ status: false, msg: "plss give some review" }); 
+
+       if (!/^[a-zA-Z ,]{3,}$/.test(review) || review.trim().length == 0)
+      return res.status(400).send({ status: false, msg: "enter valid review" });
+
+   next();
+
+  }catch (err) {
+    res.status(500).send({ status: false, msg: err.message });
+  }
+};
+
+
+module.exports = { myValidUser, bookValidation , reviewBook };
