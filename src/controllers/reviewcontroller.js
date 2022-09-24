@@ -39,6 +39,8 @@ const reviews = async (req, res) => {
 
 //-------------------------update review--------------------------------
 
+//-------------------------update review--------------------------------
+
 const updateReview = async function (req, res) {
     try {
         let bookId = req.params.bookId;
@@ -48,42 +50,52 @@ const updateReview = async function (req, res) {
         if (!mongoose.Types.ObjectId.isValid(reviewId)) return res.status(400).send({ status: false, msg: "reviewId is not valid" })
 
         let reviewData = req.body
-        let { review, rating, reviewedBy } = reviewData
+        let { reviewedBy, rating, review } = reviewData
 
-        //-----check for request body-----
+        //-----check for request body--------------------------------------------------------
         if (Object.keys(reviewData).length == 0) return res.status(404).send({ status: false, msg: "please add some data for updates!!!" })
+        
+        // ----------checking the keys with rejex--------------------------------
+        if (!/^[a-z ,.'-]+$/.test(reviewedBy) || reviewedBy.trim().length == 0)  // this rejex is taking spaces between words.   
+       return res.status(400).send({ status: false, msg: "enter valid reviewer name" });
 
-        //----check if book exist in collection or not------
+        if (!/^\s*([1-5]){1}\s*$/.test(rating)) return res.status(404).send({ status: false, msg: "ratings is accept only 1 to 5 digit only" })
+        
+       if (!/^[a-zA-Z ,]{3,}$/.test(review) || reviewedBy.trim().length == 0) return res.status(400).send({ status: false, msg: "enter valid review" });
+ 
+
+        //----check if book exist in collection or not-----------------------------------
         const book = await BookModel.findById(bookId)
 
         if (!book) return res.status(404).send({ status: false, msg: "No Book with this bookId was found in the reviewModel" })
-
+          
+        // ------------------checking the book is deleted already or present------------------------------
         if (bookId.isDeleted == true) return res.status(404).send({ status: false, msg: "Book is already deleted!!!" })
 
         const rev = await ReviewModel.findById(reviewId)
         if (!rev) return res.status(404).send({ status: false, msg: "No reviews with this reviewID was found in the reviewModel" })
 
         if (reviewId.isDeleted == true) return res.status(404).send({ status: false, msg: "reviews are already deleted!!" })
-
-        if (!/^\s*([1-5]){1}\s*$/.test(rating)) return res.status(404).send({ status: false, msg: "ratings not accepted!!!" })
-
+         
         let updateReview = await ReviewModel.findOneAndUpdate({ _id: reviewId, isDeleted: false },
             {
                 $set: {
                     review: review, rating: rating, reviewedBy: reviewedBy, reviewedAt: new Date
                 }
-            }, { new: true })
-
+            }, { new: true }).lean();
+           
+            // -------------adding a newkey--------------------------------------------------
+            updateReview.reviewsdata = book;
+        //    console.log(updateReview);
         if (!updateReview) return res.status(404).send({ status: false, msg: "Something went wrong!!!!" })
 
-        return res.status(201).send({ status: true, msg: "Updated the reviews!!!!" })
+        return res.status(201).send({ status: true, msg: "Updated the reviews!!!!", data: updateReview });
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.message })
     }
 }
 
-module.exports = { reviews, updateReview }
 
 //====================================delete review==============================================================
 
@@ -122,4 +134,4 @@ const deleteReview = async function (req, res) {
 
 }
 
-module.exports.deleteReview = deleteReview
+module.exports = { reviews, updateReview, deleteReview }
