@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController')
-const BookController = require('../controllers/bookcontroller')
-const ReviewController = require('../controllers/reviewcontroller')
-const validtaion = require('../validation/validator')
+const {createUser, login} = require('../controllers/userController')
+const {createBook,getbook, getBookByParams,updateBook,deleteBook} = require('../controllers/bookcontroller')
+const {reviews,updateReview,deleteReview } = require('../controllers/reviewcontroller')
+const {myValidUser,bookValidation, reviewBook} = require('../validation/validator')
 const { Authentication, Authorisation } = require('../middleware/auth')
 
 //----------dummy---------------------------------------------------------------------------------------------------------------------
@@ -12,39 +12,35 @@ router.get("/test-me", function (req, res) {
 })
 
 //------------create user------------------------------------------------------------------------------------------------------------------------
-router.post("/register/users", validtaion.myValidUser, userController.createUser)
+router.post("/register/users", myValidUser, createUser)
 
 //-------------login------------------------------------------------------------------------------------------------------------------------
-router.post("/login/userlogin", userController.login)
+router.post("/login/userlogin", login)
 
 //-----------create book---------------------------------------------------------------------------------------------------------------------
-router.post("/books", Authentication ,validtaion.bookValidation , BookController.createBook)
+router.post("/books", Authentication ,bookValidation ,createBook)
 
 //------------get books-----------------------------------------------------------------------------------------------------------------------
-router.get("/books",Authentication , BookController.getbook)
+router.get("/books",Authentication , getbook)
 
 //--------get by params---------------------------------------------------------------------------------------------------------------------
-router.get("/books/:bookId",Authentication, BookController.getBookByParams)
-
-//------------ update books ------------------------------------------------------------------------------------------------------------ 
-
-router.post("/books", Authentication ,validtaion.bookValidation , BookController.updateBook)
+router.get("/books/:bookId",Authentication, getBookByParams)
 
 //-------------delete books-------------------------------------------------------------------------------------------------------------------
-router.delete("/books/:bookId", Authentication, Authorisation, BookController.deleteBook)
+router.delete("/books/:bookId", Authentication, Authorisation, deleteBook)
 
 //-----------------------------update----------------------------------------------------------------------------
 
-router.put("/books/:bookId", Authentication,Authorisation, BookController.updateBook)
+router.put("/books/:bookId", Authentication,Authorisation, updateBook)
 
-//--------------------------review-------------------------
-router.post("/books/:bookId/review", ReviewController.reviews)
+//--------------------------create review----------------------------------------------------------------
+router.post("/books/:bookId/review",reviewBook, reviews)
 
-//-----------------updating the review------------------------
-router.put("/books/:bookId/review/:reviewId" , ReviewController.updateReview)
+//-----------------updating the review-------------------------------------------------------------------
+router.put("/books/:bookId/review/:reviewId" , updateReview)
 
-//-----------------deletereview-----------------------
-router.delete("/books/:bookId/review/:reviewId",ReviewController.deleteReview)
+//-----------------deletereview----------------------------------------------------------------
+router.delete("/books/:bookId/review/:reviewId", deleteReview)
 
 
 //--------------- this is to check if the end point of local host/server valid or not --------------------------------------------------------
