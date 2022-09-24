@@ -23,7 +23,8 @@ const login = async (req, res) => {
 
     let emailId = req.body.email
     let Password = req.body.password
-
+    if (!emailId) return res.status(400).send({ status: false, msge: "please enter the email to login" })
+    if (!Password) return res.status(400).send({ status: false, msge: "please enter the password to login" })
     let userLogin = await userModel.findOne({ email: emailId, password: Password })
     if (!userLogin)
       return res.status(401).send({ status: false, msg: "invalid login details" })

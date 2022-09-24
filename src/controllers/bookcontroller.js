@@ -20,9 +20,9 @@ const createBook = async function (req, res) {
 
         //-------------checking authorization----------------------------------------------------------- 
         if (req.decodedToken.userId != userId)
-            return res.status(201).send({ status: false, msg: "you are not authorised" })
+            return res.status(403).send({ status: false, msg: "you are not authorised" })
 
-        let finalData = await BookModel.create(data)//.select({deletedAt:0,_id:0,__v:0})
+        let finalData = await BookModel.create(data)
         return res.status(201).send({ status: true, msg: "created book", data: finalData })
 
     } catch (error) {
@@ -50,10 +50,10 @@ const getbook = async function (req, res) {
             }
         }
         // -------------------get books-------------------------------------------------------- 
-        const newgetBooks = await BookModel.find({ $and: [{ isDeleted: false }, que] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).sort({ title: 1 })
+        const newgetBooks = await BookModel.find({ $and: [{ isDeleted: false }, que] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, isDeleted: 1, reviews: 1 }).sort({ title: 1 })
 
         //         // ---------------nothing found----------------------------------------------------------
-        if (newgetBooks.length == 0 || newgetBooks == null) return res.status(400).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
+        if (newgetBooks.length == 0 || newgetBooks == null) return res.status(404).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
 
         return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks });
 
@@ -76,13 +76,13 @@ const getBookByParams = async function (req, res) {
 
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
 
-        const reviewsData = await ReviewModel.find({ bookId: book._id }).select({isDeleted:0,createdAt:0,updatedAt:0,__v:0})
+        const reviewsData = await ReviewModel.find({ bookId: book._id }).select({ isDeleted: 0, createdAt: 0, updatedAt: 0, __v: 0 })
         if (!reviewsData) return res.status(404).send({ status: false, message: "No book found from this bookId" })
         book.reviewsData = reviewsData
 
         let Book = {
             _id: book._id, title: book.title, excerpt: book.excerpt, userId: book.userId, category: book.category, subcategory: book.subcategory,
-            isDeleted: book.isDeleted,reviews:book.reviews, releasedAt: book.releasedAt, createdAt: book.createdAt, updatedAt: book.updatedAt, reviewsData: book.reviewsData
+            isDeleted: book.isDeleted, reviews: book.reviews, releasedAt: book.releasedAt, createdAt: book.createdAt, updatedAt: book.updatedAt, reviewsData: book.reviewsData
         }
         return res.status(200).send({ status: true, message: 'Books list', data: Book });
 
@@ -101,18 +101,18 @@ const updateBook = async function (req, res) {
 
         //-----------------check body is empty or not-----------------------------------------------------------
         if (Object.keys(bookData).length == 0)
-            return res.status(404).send({ status: false, msg: "plss put some data in body" });
+            return res.status(400).send({ status: false, msg: "plss put some data in body" });
 
         let newtitle = await BookModel.findOne({ title });
-        if (newtitle) return res.status(404).send({ status: false, msg: "title is already present" });
+        if (newtitle) return res.status(400).send({ status: false, msg: "title is already present" });
 
         let newISBN = await BookModel.findOne({ ISBN });
-        if (newISBN) return res.status(404).send({ status: false, msg: "ISBN is already present" });
+        if (newISBN) return res.status(400).send({ status: false, msg: "ISBN is already present" });
 
         //--------------CHECKING BOOK IS ALREADY DELETED OR NOT-------------------------------------
         const book = await BookModel.findById(bookId);
         if (book.isDeleted == true)
-            return res.status(404).send({ status: false, msg: "Book is already deleted" });
+            return res.status(400).send({ status: false, msg: "Book is already deleted" });
 
         let updateBook = await BookModel.findOneAndUpdate(
             { _id: bookId, isDeleted: false },
@@ -128,7 +128,7 @@ const updateBook = async function (req, res) {
             return res.status(404).send({ status: false, message: "bookId not found" })
         }
         else {
-            return res.status(201).send({ status: true, message: "book has been updated" })
+            return res.status(200).send({ status: true, message: "book has been updated" })
         }
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
@@ -145,13 +145,14 @@ const deleteBook = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Please enter valid bookId" })
 
         const book = await BookModel.findById(bookId)
-
-        if (!book || book.isDeleted == true)
-            return res.status(404).send({ status: false, msg: "Book is not present in the collection" })
+        if (book.isDeleted == true)
+            return res.status(400).send({ status: false, msg: "Book is already Deleted" })
 
         let deletedData = await BookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: Date.now() } }, { new: true })
+        if (!deletedData)
+            return res.status(404).send({ status: false, msg: "Book is not present in the collection" })
 
-        return res.status(200).send({ status: true, msg: "Book is been Deleted", data: deletedData })
+        return res.status(200).send({ status: true, msg: "Book has been Deleted" })
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
