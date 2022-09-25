@@ -51,7 +51,7 @@ const getbook = async function (req, res) {
         //         // ---------------nothing found----------------------------------------------------------
         if (newgetBooks.length == 0 || newgetBooks == null) return res.status(400).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
 
-        return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks[0] });
+        return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks});
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
