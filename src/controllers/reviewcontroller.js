@@ -17,7 +17,7 @@ const reviews = async (req, res) => {
         if (book.isDeleted == true)
             res.status(400).send({ status: true, message: "the book is already deleted" });
         
-        if (!data.bookId) data.bookId = bookId;
+        if (!data.bookId) data.bookId = bookId.toString();
         
         if (!data.reviewedBy) data.reviewedBy = "Guest";
         if (!data.reviewedAt) data.reviewedAt = new Date;
@@ -29,7 +29,7 @@ const reviews = async (req, res) => {
         newreview.bookId = bookId
 
         updatebook["reviewsdata"] = newreview;
-        return res.status(201).send({ status: true, message: "Success", data: updatebook })
+        return res.status(200).send({ status: true, message: "Success", data: updatebook })
 
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
