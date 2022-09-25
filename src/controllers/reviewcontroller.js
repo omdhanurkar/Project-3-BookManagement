@@ -49,9 +49,10 @@ const updateReview = async function (req, res) {
         //-------------------------------checking the keys with regex------------------------------------------------------------------
         if (!/^[a-z ,.'-]+$/.test(reviewedBy))  // this rejex is taking spaces between words.   
             return res.status(400).send({ status: false, msg: "enter valid reviewer name" });
-
+           
+        if(rating){
         if (!/^\s*([1-5]){1}\s*$/.test(rating)) return res.status(400).send({ status: false, msg: "ratings is accept only 1 to 5 digit only" })
-
+        }
         if (!/^[a-zA-Z ,]{3,}$/.test(review)) return res.status(400).send({ status: false, msg: "enter valid review" });
 
 
