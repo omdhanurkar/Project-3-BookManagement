@@ -5,7 +5,7 @@ const userModel = require("../models/userModel")
 const ReviewModel = require("../models/reviewModel")
 // const ObjectId = mongoose.Schema.Types.ObjectId
 
-//-----------------------😳 creating Books 😳--------------------------------------------------------------------------------------------------------------------
+//==========================================😳 creating Books 😳=========================================================================
 
 const createBook = async function (req, res) {
     try {
@@ -30,12 +30,8 @@ const createBook = async function (req, res) {
     }
 }
 
+//================================😊 get-book-details😊 ==================================================================================
 
-
-
-
-
-//---------------------------😊 get-book-details😊 ------------------------------------------------------------------------------------------------------------------------------
 const getbook = async function (req, res) {
     try {
 
@@ -43,26 +39,26 @@ const getbook = async function (req, res) {
         let userid = que.userId;
 
         // if user id present then only it will eneter into if block and check the id is not valid otherwise it will not enetr into if block
-        // -----------handle userid---------------------------------------------------
+        // ------------------------handle userid---------------------------------------------------
         if (userid || userid == '') {
             if (!mongoose.Types.ObjectId.isValid(userid)) {
                 return res.status(400).send({ status: false, message: "UserId is not valid" })
             }
         }
-        // -------------------get books-------------------------------------------------------- 
+        // ------------------------------get books-------------------------------------------------------- 
         const newgetBooks = await BookModel.find({ $and: [{ isDeleted: false }, que] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, isDeleted: 1, reviews: 1 }).sort({ title: 1 })
 
         //         // ---------------nothing found----------------------------------------------------------
         if (newgetBooks.length == 0 || newgetBooks == null) return res.status(400).send({ status: false, msg: "no books found" })  //-------null is use because if i give wrong id with 28 character then it can not read properties of authorid so it gets back null 
 
-        return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks });
+        return res.status(200).send({ status: true, msg: "Books list", data: newgetBooks[0] });
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
     }
 }
 
-//-------------------------😮 get by query-params 😮-------------------------------------------------------------------------------------
+//=====================================😮 get by query-params 😮=======================================================================================
 
 const getBookByParams = async function (req, res) {
 
@@ -91,7 +87,8 @@ const getBookByParams = async function (req, res) {
     }
 }
 
-//------------------updated book---------------------------------------------------------------------------------
+//==========================================updated book==================================================================================
+
 const updateBook = async function (req, res) {
     try {
         let bookId = req.params.bookId;
@@ -128,14 +125,14 @@ const updateBook = async function (req, res) {
             return res.status(404).send({ status: false, message: "bookId not found" })
         }
         else {
-            return res.status(200).send({ status: true, message: "book has been updated",data:updateBook })
+            return res.status(200).send({ status: true, message: "book has been updated", data: updateBook })
         }
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })
     }
 }
 
-//---------------------------- 🥲delete book🥲-------------------------------------------------------------------------------------------------
+//=================================================== delete book ==================================================================================================
 
 const deleteBook = async function (req, res) {
     try {
@@ -152,7 +149,7 @@ const deleteBook = async function (req, res) {
         if (!deletedData)
             return res.status(404).send({ status: false, msg: "Book is not present in the collection" })
 
-        return res.status(200).send({ status: true, msg: "Book has been Deleted",data:deletedData })
+        return res.status(200).send({ status: true, msg: "Book has been Deleted", data: deletedData })
 
     } catch (error) {
         return res.status(500).send({ status: false, msg: error.msg })

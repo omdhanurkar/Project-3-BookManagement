@@ -15,7 +15,6 @@ const myValidUser = async (req, res, next) => {
     if (!data.title)
       return res.status(400).send({ status: false, message: "Please enter title and valid details " });
 
-
     if (!title.includes(data.title.trim()))
       return res.status(400).send({ status: false, message: "Please enter  valid Mr,Mrs,Miss " });
 
@@ -27,12 +26,12 @@ const myValidUser = async (req, res, next) => {
     if (!Name) return res.status(400).send({ status: false, message: "Please enter Name" });
 
     //-----------------------> REGEX <------------------------------------------------------------------------------------------------------------------------------
-
     if (!/^[A-Za-z][A-Za-z0-9_]{4,29}$/.test(Name))
       return res.status(400).send({ status: false, message: "Please enter valid name and  only numbers are not allowed" });
 
     if (typeof Name === "string" && Name.trim().length == 0)
       return res.status(400).send({ status: false, message: "input valid NAme" });
+
 
     //------------------------> Phone validation and REGEX <------------------------------------------------------------------------------------------------
 
@@ -114,28 +113,20 @@ const bookValidation = async (req, res, next) => {
     if (!/^[a-zA-Z ,]+$/i.test(title))
       return res.status(400).send({ status: false, message: "please input valid title and first letter must be of Uppercase" });
 
-    let Tital = req.body.title;
-    // uniqTitle = uniqTitle.trim().split(" ").filter(word => word).join(" ")
     //------------------------- DB call ------------------------------------------------------------------------------------------------------
 
-    let uniqTitle = await bookModel.findOne({ title: Tital });
+    let uniqTitle = await bookModel.findOne({ title: title });
 
     if (uniqTitle)
       return res.status(400).send({ status: false, message: "This title already exists" });
-
-
 
     //===========================> validation for excerpt <===================================================================================================
 
     if (!excerpt)
       return res.status(400).send({ status: false, message: "input excerpt please" });
 
-    if (!(typeof excerpt == "string") || excerpt.trim().length == 0)
+    if (typeof excerpt == "string" && excerpt.trim().length == 0)
       return res.status(400).send({ status: false, message: "input valid excerpt" });
-    //----------------------------> REGEX <----------------------------------------------------------------------------------------------------------------
-
-    if (!/^[a-zA-Z][a-z_-]{3,}$/.test(excerpt))
-      return res.status(400).send({ status: false, message: "enter valid excerpt" });
 
     //============================> validation for UserID <================================================================================================
 
@@ -155,7 +146,7 @@ const bookValidation = async (req, res, next) => {
     if (!ISBN)
       return res.status(400).send({ status: false, message: "ISBN mandatory" });
 
-    if (!(typeof ISBN == "string") || ISBN.trim().length == 0)
+    if ((typeof ISBN == "string") && ISBN.trim().length == 0)
       return res.status(400).send({ status: false, message: "input valid ISBN" });
     //-----------------------------> REGEX <---------------------------------------------------------------------------------------------------------
     if (!/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(ISBN))
@@ -169,7 +160,7 @@ const bookValidation = async (req, res, next) => {
     if (!category)
       return res.status(400).send({ status: false, message: "category is mandatory" });
 
-    if (!(typeof category == "string") || category.trim().length == 0)
+    if ((typeof category == "string") && category.trim().length == 0)
       return res.status(400).send({ status: false, message: "enter  valid category" });
 
     //===============================> subcategory <========================================================================================
@@ -177,17 +168,17 @@ const bookValidation = async (req, res, next) => {
     if (!subcategory)
       return res.status(400).send({ status: false, message: "subcategory is mandatory" });
 
-    if (!(typeof subcategory == "string") || subcategory.trim().length == 0)
+    if ((typeof subcategory == "string") && subcategory.trim().length == 0)
       return res.status(400).send({ status: false, message: "enter valid subcategory" });
 
-      
-//======================================releasedAt============================================================================================
 
-if (!releasedAt)
-return res.status(400).send({ status: false, message: "releasedAt is mandatory" });
+    //======================================releasedAt============================================================================================
 
-if(!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(releasedAt))
-return res.status(400).send({status:false,message:"please enter the valid date in format of 'YYYY-MM-DD' "})
+    if (!releasedAt)
+      return res.status(400).send({ status: false, message: "releasedAt is mandatory" });
+
+    if (!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(releasedAt))
+      return res.status(400).send({ status: false, message: "please enter the valid date in format of 'YYYY-MM-DD' " })
 
 
     // calling next function --
@@ -208,7 +199,7 @@ const reviewBook = async (req, res, next) => {
 
     //------------------------checking reviewedBy----------------------------------------------------------
 
-    if (!/^[a-z ,.'-]+$/.test(reviewedBy) )  // this regex is taking spaces between words.
+    if (!/^[a-z ,.'-]+$/.test(reviewedBy))  // this regex is taking spaces between words.
       return res.status(400).send({ status: false, message: "enter valid reviewer name" });
     // -------------------checking rating--------------------------------------------
     if (!rating) return res.status(400).send({ status: false, message: "rating is mandatory" });
@@ -217,9 +208,6 @@ const reviewBook = async (req, res, next) => {
 
     // ------------checking review----------------------------------------------------
     if (!review) return res.status(400).send({ status: false, message: "review is mandatory" });
-
-    if (!/^[a-zA-Z ,]{3,}$/.test(review) )
-      return res.status(400).send({ status: false, message: "enter valid review" });
 
     next();
 

@@ -37,7 +37,7 @@ router.put("/books/:bookId", Authentication,Authorisation, updateBook)
 router.post("/books/:bookId/review",reviewBook, reviews)
 
 //-----------------updating the review-------------------------------------------------------------------
-router.put("/books/:bookId/review/:reviewId" , updateReview)
+router.put("/books/:bookId/review/:reviewId" ,reviewBook, updateReview)
 
 //-----------------deletereview----------------------------------------------------------------
 router.delete("/books/:bookId/review/:reviewId", deleteReview)

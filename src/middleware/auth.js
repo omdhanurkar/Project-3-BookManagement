@@ -9,8 +9,6 @@ const Authentication = async function (req, res, next) {
         let token = req.headers["x-api-key"]
         if (!token) return res.status(400).send({ status: false, message: "Token required" })
 
-        // console.log(token)
-
         jwt.verify(token, "group-45", (error, decodedToken) => {
             if (error) {
                 return res.status(401).send({ status: false, message: "token is invalid" });
@@ -18,10 +16,7 @@ const Authentication = async function (req, res, next) {
             }
             req["decodedToken"] = decodedToken    //this line for we can access this token outside the middleware
 
-            // console.log(decodedToken )
-
             next()
-
         });
 
     } catch (err) {
@@ -48,4 +43,4 @@ const Authorisation = async function (req, res, next) {
     }
 }
 
-module.exports={Authentication,Authorisation}
+module.exports = { Authentication, Authorisation }
