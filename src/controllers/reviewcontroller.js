@@ -15,9 +15,7 @@ const reviews = async (req, res) => {
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
 
         if (book.isDeleted == true) return res.status(400).send({ status: false, message: "the book is deleted so you can not give a review" });
-          
-        //-----------------review creation possible once------------------------------------------------------------------------------
-         const review = await ReviewModel.findById(bookId)
+        const review = await ReviewModel.findById(bookId)
         if (review) return res.status(400).send({ status: false, message: "Reviewed already created. You can create review only once." })
 
         if (!data.bookId) data.bookId = book._id;
@@ -33,7 +31,6 @@ const reviews = async (req, res) => {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
-
 //====================================================update review===================================================================================================
 
 const updateReview = async function (req, res) {
