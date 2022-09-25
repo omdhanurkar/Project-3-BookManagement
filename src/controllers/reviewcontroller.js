@@ -9,28 +9,33 @@ const reviews = async (req, res) => {
     try {
         let data = req.body;
         let bookId = req.params.bookId
-        if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, message: "bookId is not valid" }) }
+        if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
 
         const book = await BookModel.findById(bookId)
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
 
-        if (book.isDeleted == true) return res.status(400).send({ status: false, message: "the book is deleted so you can not give a review" });
-        const review = await ReviewModel.findById(bookId)
+        const review = await ReviewModel.findOne({ bookId })
         if (review) return res.status(400).send({ status: false, message: "Reviewed already created. You can create review only once." })
 
-        if (!data.bookId) data.bookId = book._id;
+        if (!data.bookId) data.bookId = bookId;
         if (!data.reviewedBy) data.reviewedBy = "Guest";
         if (!data.reviewedAt) data.reviewedAt = new Date;
 
         const updatebook = await BookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: +1 } }, { new: true }).lean();
-        const newreview = await ReviewModel.create(updatebook);
-        book._doc.reviewsData = newreview;
-        return res.status(201).send({ status: true, message: "Success", data: book })
+        const newreview = await ReviewModel.create(data);
+        if (updatebook.isDeleted == true)
+            res.status(400).send({ status: true, message: "the book is already deleted" });
+
+        newreview.bookId = bookId
+
+        updatebook["reviewsdata"] = newreview;
+        return res.status(201).send({ status: true, message: "Success", data: updatebook })
 
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
+
 //====================================================update review===================================================================================================
 
 const updateReview = async function (req, res) {
