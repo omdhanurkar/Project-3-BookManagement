@@ -11,20 +11,23 @@ const reviews = async (req, res) => {
         let bookId = req.params.bookId
         if (!mongoose.Types.ObjectId.isValid(bookId)) { return res.status(400).send({ status: false, msg: "bookId is not valid" }) }
 
-        const book = await BookModel.findById(bookId)
+        const book = await bookModel.findById(bookId)
         if (!book) return res.status(404).send({ status: false, message: "No book found from this bookId" })
+
+        if (book.isDeleted == true)
+            res.status(400).send({ status: true, message: "the book is already deleted" });
 
         const review = await ReviewModel.findOne({ bookId })
         if (review) return res.status(400).send({ status: false, message: "Reviewed already created. You can create review only once." })
 
         if (!data.bookId) data.bookId = bookId;
+        
         if (!data.reviewedBy) data.reviewedBy = "Guest";
         if (!data.reviewedAt) data.reviewedAt = new Date;
 
-        const updatebook = await BookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: +1 } }, { new: true }).lean();
+
+        const updatebook = await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: +1 } }, { new: true }).lean();
         const newreview = await ReviewModel.create(data);
-        if (updatebook.isDeleted == true)
-            res.status(400).send({ status: true, message: "the book is already deleted" });
 
         newreview.bookId = bookId
 
@@ -35,7 +38,6 @@ const reviews = async (req, res) => {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
-
 //====================================================update review===================================================================================================
 
 const updateReview = async function (req, res) {
