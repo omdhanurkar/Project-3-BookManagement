@@ -16,10 +16,7 @@ const reviews = async (req, res) => {
 
         if (book.isDeleted == true)
             res.status(400).send({ status: true, message: "the book is already deleted" });
-
-        const review = await ReviewModel.findOne({ bookId })
-        if (review) return res.status(400).send({ status: false, message: "Reviewed already created. You can create review only once." })
-
+        
         if (!data.bookId) data.bookId = bookId;
         
         if (!data.reviewedBy) data.reviewedBy = "Guest";
