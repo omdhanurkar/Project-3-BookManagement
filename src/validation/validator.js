@@ -26,7 +26,7 @@ const myValidUser = async (req, res, next) => {
     if (!Name) return res.status(400).send({ status: false, message: "Please enter Name" });
 
     //-----------------------> REGEX <------------------------------------------------------------------------------------------------------------------------------
-    if (!/^[A-Za-z][A-Za-z0-9_]{4,29}$/.test(Name))
+    if (!/^[A-Za-z]{1,35}/.test(Name))
       return res.status(400).send({ status: false, message: "Please enter valid name and  only numbers are not allowed" });
 
     if (typeof Name === "string" && Name.trim().length == 0)
