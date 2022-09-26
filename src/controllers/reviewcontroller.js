@@ -30,7 +30,7 @@ const reviews = async (req, res) => {
         const newreview = await ReviewModel.create(data);
 
         updatebook["reviewsdata"] = newreview;
-        return res.status(200).send({ status: true, message: "Success", data: updatebook })
+        return res.status(201).send({ status: true, message: "Success", data: updatebook })
 
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
@@ -68,7 +68,7 @@ const updateReview = async function (req, res) {
         if (!book) return res.status(404).send({ status: false, msg: "No Book with this bookId was found in the reviewModel" })
 
         //-------------------------checking the book is deleted already or present-------------------------------------------------------------------------
-        if (bookId.isDeleted == true) return res.status(400).send({ status: false, msg: "Book is deleted so you not able to update it" })
+        if (book.isDeleted == true) return res.status(400).send({ status: false, msg: "Book is deleted so you not able to update it" })
 
         const rev = await ReviewModel.findById(reviewId)
         if (!rev) return res.status(404).send({ status: false, msg: "No reviews with this reviewID was found in the reviewModel" })
