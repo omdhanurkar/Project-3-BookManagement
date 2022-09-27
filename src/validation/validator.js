@@ -1,5 +1,7 @@
 const userModel = require("../models/userModel");
 const bookModel = require("../models/bookModel");
+const moment = require("moment")
+
 const myValidUser = async (req, res, next) => {
   try {
     let data = req.body;
@@ -171,7 +173,6 @@ const bookValidation = async (req, res, next) => {
     if ((typeof subcategory == "string") && subcategory.trim().length == 0)
       return res.status(400).send({ status: false, message: "enter valid subcategory" });
 
-
     //======================================releasedAt============================================================================================
 
     if (!releasedAt)
@@ -179,6 +180,11 @@ const bookValidation = async (req, res, next) => {
 
     if (!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(releasedAt))
       return res.status(400).send({ status: false, message: "please enter the valid date in format of 'YYYY-MM-DD' " })
+
+    let date = moment().format("YYYY-MM-DD")
+    if (!moment(releasedAt).isAfter(date)) {
+      return res.status(400).send({ status: false, message: "pls provide an upcoming date" })
+    }
 
 
     // calling next function --

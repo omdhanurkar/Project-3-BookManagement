@@ -7,8 +7,6 @@ const userSchema = new mongoose.Schema(
             enum: ["Mr", "Mrs", "Miss"],
             trim: true
         },
-
-
         name: {
             type: String,
             require: true,

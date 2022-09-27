@@ -24,7 +24,7 @@
   createdAt: {timestamp},
   updatedAt: {timestamp}
 }
-```
+```--
 
 - Books Model
 ```yaml

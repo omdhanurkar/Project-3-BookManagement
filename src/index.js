@@ -21,7 +21,6 @@ app.use((req, res, next) => {
     res.status(400).send({ status: false, error: "URL is wrong" });
 })
 
-
 app.listen(process.env.PORT || 3000, function () {
     console.log('Express app running on port ' + (process.env.PORT || 3000))
 });

@@ -6,7 +6,7 @@ const bookSchema = new mongoose.Schema({
         type: String,
         require: true,
         unique: true,
-        uppercase : true
+        uppercase: true
     },
     excerpt: {
         type: String,
@@ -54,6 +54,5 @@ const bookSchema = new mongoose.Schema({
         require: true
     }
 }, { timestamps: true })
-
 
 module.exports = mongoose.model("Book", bookSchema);
